@@ -22,6 +22,9 @@ lint: $(SRC)
 test-new-egg:
 	test-new-egg transmission https://raw.githubusercontent.com/SiIky/transmission.scm/master/transmission.release-info
 
+watch: $(SRC) transmission.egg
+	ls -1 $(SRC) transmission.egg | entr -c make test
+
 # Transmission Daemon Settings
 
 AUTH_NO_AUTH := --auth # --no-auth
@@ -81,4 +84,4 @@ start-transmission: $(DOWNLOAD_DIR)
 	transmission-daemon $(TRANSMISSION_ARGS) 2>&1 | tee $(LOG_FILE)
 	rm start-transmission
 
-.PHONY: clean csi daemon_running default example example_repl install lint test test-new-egg
+.PHONY: clean csi daemon_running default example example_repl install lint test test-new-egg watch

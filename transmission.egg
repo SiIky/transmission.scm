@@ -5,11 +5,13 @@
  (version "0.2.1")
  (category net)
  (dependencies
+   comparse
    http-client
    intarweb
    medea
    r7rs
    srfi-1
+   srfi-14
    srfi-189
    uri-common)
  (test-dependencies

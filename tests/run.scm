@@ -399,6 +399,16 @@
       (test 'args (reply-arguments success-reply)))))
 
 (test-group "transmission.utils"
-  )
+  (test-group "parse-ids"
+    (test #f (parse-ids "all123"))
+    (test '() (parse-ids ""))
+    (test #f (parse-ids "all"))
+    (test "recently-active" (parse-ids "active"))
+    (test '(42) (parse-ids "42"))
+    (test '(1 2 3) (parse-ids "1,2,3"))
+    (test '(1 2 3) (parse-ids "1-3"))
+    (test '(1 2 3 5 6 7) (parse-ids "1-3,5-7"))
+    (test '("618de4d680fa7c634fbf66c62c6d68a20e17ea2a") (parse-ids "618de4d680fa7c634fbf66c62c6d68a20e17ea2a"))
+    (test '(1 2 3 5 6 7 "618de4d680fa7c634fbf66c62c6d68a20e17ea2a") (parse-ids "1-3,5-7,618de4d680fa7c634fbf66c62c6d68a20e17ea2a"))))
 
 (test-exit)

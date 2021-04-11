@@ -47,11 +47,13 @@ siiky
 
 The following eggs are required for using this egg:
 
+* [[comparse]]
 * [[http-client]]
 * [[intarweb]]
 * [[medea]]
 * [[r7rs]]
 * [[srfi-1]]
+* [[srfi-14]]
 * [[srfi-189]]
 * [[uri-common]]
 
@@ -257,6 +259,50 @@ Return an unique tag, that starts at 0 and is incremented by 1 on each call. If
 {{new-n}} is given and is a {{fixnum?}}, set the internal variable to {{new-n}}
 for future use.
 
+<procedure>(parse-ids str)</procedure>
+
+Parse a string into a value passable as the IDs to the {{transmission}}
+module's functions. The accepted string is similar to that accepted by
+{{transmission-remote}}:
+
+<enscript highlight="scheme">
+(parse-ids "")
+;=> '()
+(parse-ids "all")
+;=> #f
+(parse-ids "active")
+;=> "recently-active"
+(parse-ids "42")
+;=> '(42)
+(parse-ids "1,2,3")
+;=> '(1 2 3)
+(parse-ids "1-3")
+;=> '(1 2 3)
+(parse-ids "1-3,5-7")
+;=> '(1 2 3 5 6 7)
+(parse-ids "618de4d680fa7c634fbf66c62c6d68a20e17ea2a")
+;=> '("618de4d680fa7c634fbf66c62c6d68a20e17ea2a")
+(parse-ids "1-3,5-7,618de4d680fa7c634fbf66c62c6d68a20e17ea2a")
+;=> '(1 2 3 5 6 7 "618de4d680fa7c634fbf66c62c6d68a20e17ea2a")
+</enscript>
+
+Currently there's no way to distinguish a failed parsed string from an
+{{"all"}} because {{comparse}} returns {{#f}} on failure.
+
+A more formal grammar follows:
+
+<enscript>
+IDs := IDs-group | IDs-list
+
+IDs-group := "" | "active" | "all"
+
+IDs-list := ID ("," ID)*
+
+ID := number-range | <number> | <hash>
+
+number-range := <number> "-" <number>
+</enscript>
+
 <constant>status/stopped</constant>
 <constant>status/check-wait</constant>
 <constant>status/check</constant>
@@ -304,10 +350,9 @@ path must be {{/some/path/}} (note that, to Transmission, {{/some/path}} and
         (error 'here "torrent-get call failed with the following error" result)))))
 </enscript>
 
-For more examples take a look at
-[[https://github.com/siiky/transmission-examples]] (no longer in this egg's
-download directory). The example above is similar to {{transmission-filter}}
-from that repo.
+For more examples take a look at [[https://github.com/siiky/trmote]] (no longer
+in this egg's download directory). The example above is similar to
+{{transmission-filter}} from that repo.
 
 === License
 
@@ -337,6 +382,10 @@ from that repo.
   For more information, please refer to <http://unlicense.org>
 
 === Version History
+
+==== 0.2.2 (2021/04/dd)
+
+ * Add {{parse-ids}} to {{transmission.utils}}.
 
 ==== 0.2.1 (2021/01/10)
 
